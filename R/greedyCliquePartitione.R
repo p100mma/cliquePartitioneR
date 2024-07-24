@@ -77,7 +77,7 @@ if (expansion_mode=='max')
 if (expansion_mode=='outN')
 	partition<-rcpplique_gw_outN(W)
 if (expansion_mode=='outW')
-	partition<-rcpplique_gw_outN(W)
+	partition<-rcpplique_gw_outW(W)
 
 if (unique_singletonLabels)
 	partition<- uniqueSingletonLabels(partition)

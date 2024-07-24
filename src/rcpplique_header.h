@@ -40,4 +40,9 @@ void update_neigh_and_outDeg( std::vector<int> &current_neigh,
 				 std::vector<int> &new_neigh,
 				std::vector<int> &out_deg,
 				bool &no_cl_neigh);
+void update_neigh_and_outStr( std::vector<int> &current_neigh,
+				 std::vector<int> &new_neigh,
+				std::vector<float> &out_deg,
+				std::vector<float> newcomer_con,
+				bool &no_cl_neigh);
 #endif

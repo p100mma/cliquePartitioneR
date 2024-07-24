@@ -17,7 +17,7 @@ using namespace Rcpp;
 //' @return An integer vector encoding the clique membership of each node. Zeroes encode singletons.
 //' @export 
 // [[Rcpp::export]]
-IntegerVector rcpplique_gw_outN(NumericMatrix W_r){
+IntegerVector rcpplique_gw_outW(NumericMatrix W_r){
 	int N_obj = W_r.ncol();
 	std::vector<std::vector<float>> W (N_obj);
 	for (auto &row : W) row.resize(N_obj);
@@ -41,26 +41,24 @@ IntegerVector rcpplique_gw_outN(NumericMatrix W_r){
 	int label=0;
 	reduce_to_unexplored_subgraph(A,W,v_i,degs,memsh);
 	while (!v_i.empty()){ //main loop
-			std::vector<int> b_degs (v_i.size(),0);
-			for (int i=0; i<v_i.size();++i) 
-				for (int j=0; j<v_i.size();++j) b_degs[i]+= A[i][j];        
 			counter+=1;
 			label+=1;
 			std::vector<int> max_W_ij= max_edge( W, degs);
 			for (auto i: max_W_ij) memsh[v_i[i]]=label;
 			std::vector<int>  cl_neig= A[max_W_ij[0]];
-			std::vector<int> out_deg(cl_neig.size()); 
+			std::vector<float> out_deg(cl_neig.size()); 
 			for (int i=0; i< v_i.size(); ++i){
 				if ( i==max_W_ij[0] ) {out_deg[i] = -1;} else {
-						      out_deg[i] = b_degs[i];
-						      if (A[i][max_W_ij[0]]) out_deg[i]--; 
+						      out_deg[i] = degs[i];
+						      if (A[i][max_W_ij[0]]) out_deg[i]= out_deg[i] - W[i][max_W_ij[0]]; 
 					}
 				}
 			int current_size=1;
 			bool no_neigh=true;
-			update_neigh_and_outDeg( cl_neig,
+			update_neigh_and_outStr( cl_neig,
 				A[max_W_ij[1]], 
-				out_deg,	
+				out_deg,
+				W[max_W_ij[1]],	
 				no_neigh);
 			current_size++;
 			while (!no_neigh){
@@ -69,9 +67,10 @@ IntegerVector rcpplique_gw_outN(NumericMatrix W_r){
 				int newcomer= which_max(out_deg);
 				memsh[v_i[ newcomer]]=label; 
 				no_neigh=true;
-				update_neigh_and_outDeg( cl_neig,
+				update_neigh_and_outStr( cl_neig,
 						A[newcomer], 
 						out_deg,	
+						W[newcomer],
 						no_neigh);
 			current_size++;
 			}; 

@@ -128,5 +128,19 @@ for (int i=0; i< out_deg.size(); i++)
 	no_cl_neigh=false;
 	out_deg[i]= new_neigh[i] ? out_deg[i]-1 : out_deg[i];	
 	} else
-	out_deg[i]= 0;	
+	out_deg[i]= -1;	
+}
+
+void update_neigh_and_outStr( std::vector<int> &current_neigh,
+				 std::vector<int> &new_neigh,
+				std::vector<float> &out_deg,
+				std::vector<float> newcomer_con,
+				bool &no_cl_neigh){
+update_neigh(current_neigh,new_neigh);
+for (int i=0; i< out_deg.size(); i++) 
+	if (current_neigh[i]){
+	no_cl_neigh=false;
+	out_deg[i]= new_neigh[i] ? out_deg[i]- newcomer_con[i] : out_deg[i];	
+	} else
+	out_deg[i]= -1;	
 }

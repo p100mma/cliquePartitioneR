@@ -1,0 +1,18 @@
+Package: cliquePartitioneR
+Type: Package
+Title: Partitioning Undirected Weighted Graphs Into Heavily Connected Cliques
+Version: 1.0
+Date: 2024-07-13
+Author: Piotr Stomma
+Maintainer: Piotr Stomma <p.stomma@uwb.edu.pl>
+Description: Collection of functions for partitioning undirected weighted graphs into cliques,
+         in a manner that takes into the account the weights of the edges. Designed to work 
+	 mostly with dense graphs, even fully connected. Clique paritioning of such graphs
+	 that also exhibit a correlation of weighted and plain degree is a meaningful way
+	 of simplifying the analysis of such graphs, especially if clique parititioning
+	 takes weights into the account. For the case of such graphs, simple greedy algorithms
+	 can be used due to the weighted - unweighted degree correlations. Routines for such
+	 algorithms were implemented in C++.
+License: GPL (>= 2)
+Imports: Rcpp (>= 1.0.12)
+LinkingTo: Rcpp

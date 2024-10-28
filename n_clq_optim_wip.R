@@ -13,7 +13,7 @@ n_clq_f<- function(t, S, ordS_ltr){
   diag(S)<-0
   if (t %in% ordS_ltr) t_exact=TRUE else t_exact=FALSE
   n_eq_tries=0
-  if (t_exact) {
+  if (t_exact)st {
     S[S< t]=0
     greedyCliquePartitioner(S, expansion_mode = "basic", unique_singletonLabels = FALSE)$membership -> clqs
     length(unique(clqs)) -> y_t
@@ -71,4 +71,4 @@ r_t= rs[[2]]
 
 optimize(f = n_clq_f, interval=c(l_t, r_t), maximum = TRUE,
          S=S, ordS_ltr= ord_S_ltr, tol= 0.1)->res_opt
-res_opt$objective
+print(res_opt$objective)

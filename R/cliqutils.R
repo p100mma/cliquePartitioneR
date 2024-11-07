@@ -137,7 +137,7 @@ return(rment)
 #' tidyUpLabels(mem)
 #' @export
 tidyUpLabels<- function(labelV) {
-uqn0<-unique(labelV[labelV!=0])
+uqn0<-sort(unique(labelV[labelV!=0]))
 rmentL<- seq_along(uqn0)
 rment<- rep(0, length(labelV))
 for (l in seq_along(uqn0))

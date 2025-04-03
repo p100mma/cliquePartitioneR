@@ -70,3 +70,16 @@ rcpplique_gw_outW <- function(W_r) {
     .Call(`_cliquePartitioneR_rcpplique_gw_outW`, W_r)
 }
 
+#' Rcpp Implementation of Basic Greedy Clique Partitioner
+#'
+#' This function assumes the matrix is symmetric and its diagonal is zeroed out
+#' and performs no checks for correctness of the input.
+#' Use \code{greedyCliquePartitioner()} for a robust version.
+#'
+#' @param W_r A numeric matrix, assumed to be symmetric with zeroes on its diagonal.
+#' @return An integer vector encoding the clique membership of each node. Zeroes encode singletons.
+#' @export 
+rcpplique_gw_sumPC <- function(W_r) {
+    .Call(`_cliquePartitioneR_rcpplique_gw_sumPC`, W_r)
+}
+

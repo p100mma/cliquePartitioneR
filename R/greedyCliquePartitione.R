@@ -43,7 +43,7 @@ greedyCliquePartitioner<- function(W,
 				   unique_singletonLabels=FALSE) {
 
 
-if (!(expansion_mode %in% c('basic', 'average', 'max', 'outN', 'outW')) )
+if (!(expansion_mode %in% c('basic', 'average', 'max', 'outN', 'outW', 'sumPC')) )
 	stop("unknown value of expansion_mode")
 
 #check correctness of W matrix
@@ -78,6 +78,8 @@ if (expansion_mode=='outN')
 	partition<-rcpplique_gw_outN(W)
 if (expansion_mode=='outW')
 	partition<-rcpplique_gw_outW(W)
+if (expansion_mode=='sumPC')
+	partition<-rcpplique_gw_sumPC(W)
 
 if (unique_singletonLabels)
 	partition<- uniqueSingletonLabels(partition)

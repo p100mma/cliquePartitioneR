@@ -75,6 +75,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// rcpplique_gw_sumPC
+IntegerVector rcpplique_gw_sumPC(NumericMatrix W_r);
+RcppExport SEXP _cliquePartitioneR_rcpplique_gw_sumPC(SEXP W_rSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type W_r(W_rSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcpplique_gw_sumPC(W_r));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_cliquePartitioneR_rcpp_hello_world", (DL_FUNC) &_cliquePartitioneR_rcpp_hello_world, 0},
@@ -83,6 +94,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_cliquePartitioneR_rcpplique_gw_max", (DL_FUNC) &_cliquePartitioneR_rcpplique_gw_max, 1},
     {"_cliquePartitioneR_rcpplique_gw_outN", (DL_FUNC) &_cliquePartitioneR_rcpplique_gw_outN, 1},
     {"_cliquePartitioneR_rcpplique_gw_outW", (DL_FUNC) &_cliquePartitioneR_rcpplique_gw_outW, 1},
+    {"_cliquePartitioneR_rcpplique_gw_sumPC", (DL_FUNC) &_cliquePartitioneR_rcpplique_gw_sumPC, 1},
     {NULL, NULL, 0}
 };
 

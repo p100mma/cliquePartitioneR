@@ -11,6 +11,64 @@ bool is_neg1(int x) { return x==-1; };
 bool a_is_empty(const std::vector<int> &x) { return x.empty(); };	
 bool w_is_empty(const std::vector<float> &x) { return x.empty(); };
 
+
+void reduce_to_unexplored_subgraph2(
+	std::vector<std::vector<int>> &A,
+	std::vector<std::vector<float>> &W,
+	std::vector<int> &V,
+	std::vector<float> &STR,
+	std::vector<int> &DEG,
+        const std::vector<int> &mem){
+	std::vector<int> indexes;	//inside V, DEG, W, A, potentially to stay
+	std::vector<int> indexes2go;	
+	for (int j=0; j< V.size(); j++) if (mem[V[j]]==-1) indexes.push_back(j); 
+					else {
+					V[j]=-1;
+					DEG[j]=-1;
+					STR[j]=-1;
+					W[j].clear();
+					A[j].clear();
+					for (int k=0; k< W.size(); k++)
+						{
+						if (!W[k].empty()){
+						W[k][j]=-1;
+						A[k][j]=-1;
+						DEG[k]-=A[k][j];
+						STR[k]-=W[k][j];
+							  	  }
+						}
+					      }
+	for (int i: indexes){ bool i_stays=false;
+		for(int j: indexes) if (A[i][j]>0) {i_stays=true; break;};
+		if (!i_stays) { indexes2go.push_back(i);
+				V[i]=-1;
+				DEG[i]=-1;
+				W[i].clear();
+				A[i].clear();
+				for (int k=0; k< W.size(); k++)
+					{
+					if (!W[k].empty()){
+					W[k][i]=-1;
+					A[k][i]=-1;
+					DEG[k]-=A[k][i];
+					STR[k]-=W[k][i];
+							  }
+					}
+				}
+					}
+	V.erase(std::remove_if(V.begin(),V.end(), is_neg1), V.end());
+	DEG.erase(std::remove_if(DEG.begin(),DEG.end(), is_neg1), DEG.end());
+	STR.erase(std::remove_if(STR.begin(),STR.end(), is_neg1), STR.end());
+	W.erase(std::remove_if(W.begin(),W.end(), w_is_empty), W.end());
+	A.erase(std::remove_if(A.begin(),A.end(), a_is_empty), A.end());
+	for (int i=0; i<W.size();++i)
+		if (!A[i].empty())
+		{
+		W[i].erase(std::remove_if(W[i].begin(),W[i].end(), is_neg1), W[i].end());
+		A[i].erase(std::remove_if(A[i].begin(),A[i].end(), is_neg1), A[i].end());
+		}
+}
+
 void reduce_to_unexplored_subgraph(
 	std::vector<std::vector<int>> &A,
 	std::vector<std::vector<float>> &W,
@@ -88,6 +146,31 @@ void update_neigh( std::vector<int> &current_neigh,
 				 std::vector<int> &new_neigh){
 for (int i=0; i< current_neigh.size(); i++) 
 	current_neigh[i] = current_neigh[i] && new_neigh[i];
+}
+
+void update_neigh_and_potential_score( std::vector<int> &cur_neig,
+		std::vector<int> &new_neig, 
+		std::vector<float> &cur_score,	
+		const int &new_v,
+		bool &no_neigh,
+	       	std::vector<std::vector<float>> &W){
+std::vector<int> removed(cur_score.size(),0);
+for (int i=0; i< new_neig.size(); i++) {
+	if (((cur_neig[i]) && (!new_neig[i]))){
+	removed[i]=1;	
+	}
+	cur_neig[i] = cur_neig[i] && new_neig[i];
+	}
+for (int i=0; i<new_neig.size();++i){
+	if (cur_neig[i]){
+	no_neigh=false;	
+	cur_score[i]+= W[i][new_v]; 
+	for (int k=0; k<removed.size();++k) if(removed[k]) cur_score[i]-= W[k][i];
+	} else { cur_score[i]=0;} 
+	}	
+	int n_removed=0;
+	for (int k=0; k<removed.size();++k) if(removed[k]) n_removed++;
+	//Rcout<<"neighborhood should decrease by  "<<n_removed<<"\n";
 }
 
 void update_neigh_and_avg( std::vector<int> &current_neigh,

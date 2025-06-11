@@ -32,6 +32,7 @@ IntegerVector rcpplique_gw_avg(NumericMatrix W_r){
 			}	
 	std::vector<int> memsh (N_obj,-1);	//-1 is label of` to be checked node
 	std::vector<int> v_i (N_obj);         //vertex index (original)
+	std::vector<int> joinOrder (N_obj, -1); //metadata, node processing order	
 	std::vector<float> degs (N_obj,0);         //vertex index (original)
 	for (int i=0; i<N_obj; ++i){ v_i[i]=i;
 	for (int j=0; j<N_obj; ++j)  degs[i]+=W[i][j];
@@ -41,10 +42,10 @@ IntegerVector rcpplique_gw_avg(NumericMatrix W_r){
 	int label=0;
 	reduce_to_unexplored_subgraph(A,W,v_i,degs,memsh);
 	while (!v_i.empty()){ //main loop
-			counter+=1;
 			label+=1;
 			std::vector<int> max_W_ij= max_edge( W, degs);
 			for (auto i: max_W_ij) memsh[v_i[i]]=label;
+			for (auto i: max_W_ij) {counter+=1;  joinOrder[v_i[i]]=counter;};
 			std::vector<float> avg_cons= W[max_W_ij[0]];
 			int current_size=1;
 			std::vector<int>  cl_neig= A[max_W_ij[0]];
@@ -59,7 +60,8 @@ IntegerVector rcpplique_gw_avg(NumericMatrix W_r){
 				counter+=1;
 				if (counter % 1000 == 0) {checkUserInterrupt(); Rcout<<v_i.size()<<"\n";};
 				int newcomer= which_max(avg_cons);
-				memsh[v_i[ newcomer]]=label; 
+				joinOrder[ v_i[newcomer] ]=counter;
+				memsh[v_i[newcomer]]=label; 
 				no_neigh=true;
 				update_neigh_and_avg( cl_neig,
 						A[newcomer], 
@@ -72,6 +74,9 @@ IntegerVector rcpplique_gw_avg(NumericMatrix W_r){
 		}
 	for (int i=0; i<memsh.size(); ++i) if (memsh[i]==-1) memsh[i]=0;
 	IntegerVector membership(memsh.size());
+	IntegerVector join_order(joinOrder.size());
 	for (int i=0; i<memsh.size(); ++i) membership[i]=memsh[i];
+	for (int i=0; i<joinOrder.size(); ++i) join_order[i]=joinOrder[i];
+	membership.attr("joinOrder")=join_order;
 	return membership;
 	}
